@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+    <file:connector name="File" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
+    <sftp:connector name="SFTP" validateConnections="true" doc:name="SFTP"/>
+    <flow name="testftpFlow1" doc:name="testftpFlow1">
+        <file:inbound-endpoint path="/temp/inbound_notes" moveToDirectory="/temp/inbound_notes/archive" responseTimeout="10000" connector-ref="File" doc:name="File">
+            <file:filename-regex-filter pattern="^.*.xml$" caseSensitive="true"/>
+        </file:inbound-endpoint>
+        <sftp:outbound-endpoint exchange-pattern="one-way" outputPattern="#[message.inboundProperties['originalFilename']]" host="bonita" port="22" path="/home/zimmerd" user="zimmerd" password="Bluebeed00" responseTimeout="10000" connector-ref="SFTP" doc:name="SFTP"/>
+    </flow>
+</mule>
